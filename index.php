@@ -1,4 +1,8 @@
 <?php session_start(); 
+		if (isset($_SESSION['logout'])) {
+			session_destroy(); 
+		}
+		
 ?>
 
 <!DOCTYPE html>
@@ -52,12 +56,11 @@
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
 					</div>
-					<input type="hidden" name="attempt">
 					
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
-							Login
-						</button>
+						<input type="submit" name="submit" class="login100-form-btn" value="Login">
+							
+						
 					</div>
 
 					<div class="text-center p-t-12">

@@ -1,29 +1,46 @@
 <?php
+
+    session_start();
     include_once('dbconnection.php');
-
-    $username = $_POST['username'];
-    $password = $_POST['pass'];
-
-    $attempt = $_POST['attempt'];
-
-    if($attempt<4){
-        $check_login = "SELECT * FROM `user` WHERE username = '$username' AND password = '$password'";
-
-        $result = mysqli_query($conn, $check_login);
+    // DB Connection
+   
+    if(isset($_REQUEST['submit'])){
         
+        $username = $_REQUEST['username'];
+        $password = md5($_REQUEST['pass']);
+        $login_auth = "SELECT * FROM `user` WHERE username = '$username' AND password = '$password' AND attempt < 4";
+        $result = mysqli_query($conn, $login_auth);
         
-        if($result->num_rows){
-            header("location: http://localhost:8080/blog/dashboard.php");
+         //echo isset($_REQUEST['submit']); exit;
+        if($result->num_rows > 0){
+            $login_attempt = "UPDATE `user` SET attempt = 0 WHERE username = '$username'";
+            $conn->query($login_attempt);
+           
+            $row = $result -> fetch_array(MYSQLI_ASSOC);
+
+            $_SESSION['chk_login'] = $row["username"];
+            $_SESSION['logout'] = false;
+           // print_r($row); exit;
+            header("Location: dashboard.php");
         }else{
+            $sql = "UPDATE user SET attempt = attempt + 1 WHERE username = '$username'";
+		    $conn->query($sql);
+	        echo "0 results";
+
             session_start();
             $_SESSION["notice"] = "";
-            // $attempt++;
-            // echo "No of attempts" . $attempt++;
 
-            header("location: http://localhost:8080/blog/");
+            header("location: http://localhost/blog/");
         }
-    }else{
-        
     }
     
 ?>
+
+
+   
+
+
+        
+        
+        
+        
